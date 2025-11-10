@@ -92,17 +92,30 @@ def train_models(df):
     pred_c = model_count.predict(X_test)
     pred_r = model_rev.predict(X_test)
 
+    # Compute RMSE in a way compatible with all sklearn versions
+    from sklearn.metrics import mean_absolute_error, mean_squared_error
+    import numpy as np
+
+    mae_count = mean_absolute_error(y_test_c, pred_c)
+    mse_count = mean_squared_error(y_test_c, pred_c)
+    rmse_count = np.sqrt(mse_count)
+
+    mae_rev = mean_absolute_error(y_test_r, pred_r)
+    mse_rev = mean_squared_error(y_test_r, pred_r)
+    rmse_rev = np.sqrt(mse_rev)
+
     st.write("### Model performance (test split)")
-    st.write(f"- Count MAE: {mean_absolute_error(y_test_c, pred_c):,.2f}")
-    st.write(f"- Count RMSE: {mean_squared_error(y_test_c, pred_c, squared=False):,.2f}")
-    st.write(f"- Revenue MAE: {mean_absolute_error(y_test_r, pred_r):,.2f}")
-    st.write(f"- Revenue RMSE: {mean_squared_error(y_test_r, pred_r, squared=False):,.2f}")
+    st.write(f"- Count MAE: {mae_count:,.2f}")
+    st.write(f"- Count RMSE: {rmse_count:,.2f}")
+    st.write(f"- Revenue MAE: {mae_rev:,.2f}")
+    st.write(f"- Revenue RMSE: {rmse_rev:,.2f}")
 
     os.makedirs("models", exist_ok=True)
     joblib.dump({"model": model_count, "features": feature_cols}, "models/count_model.joblib")
     joblib.dump({"model": model_rev, "features": feature_cols}, "models/revenue_model.joblib")
 
     st.success("Models trained and saved to ./models")
+
 
 # --------------------------
 # Predict single future day
