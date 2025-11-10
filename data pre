@@ -173,7 +173,7 @@ elif os.path.exists(LOCAL_FALLBACK):
 
 if df is not None:
     st.write("### Data preview")
-    st.dataframe(df.head())
+    st.dataframe(df.head(10))
 
     col1, col2 = st.columns(2)
     with col1:
